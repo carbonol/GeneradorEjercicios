@@ -1,0 +1,57 @@
+def fixed_str_data_gen(value: str)
+def fixed_int_data_gen(value: int)
+def fixed_float_data_gen(value: float)
+def fixed_true_data_gen()
+def fixed_false_data_gen()
+
+def random_str_data_from_list_gen(possible_input_values_list: list)
+def random_int_data_from_list_gen(possible_input_values_list: list)
+def random_float_data_from_list_gen(possible_input_values_list: list)
+
+def random_int_from_closed_interval_data_gen(min_value: int, max_value: int)
+def random_int_from_range_data_gen(data_range: range) - (data_range.start, data_range.stop, data_range.step)
+
+def random_float_from_closed_interval_data_gen(min_value: float, max_value: float)
+def random_float_from_closed_interval_with_fixed_precision_data_gen(min_value: float, max_value: float, precision: int)
+
+El valor max_value puede o no incluirse en el rango de valores a escoger, por asuntos relacionados con operaciones de punto flotante.
+
+def random_strict_bool_data_gen()
+
+Patrones:
+def fixed_sequential_str_data_from_list_gen(possible_input_values_list: list, fsidg_index_item: list)
+def fixed_sequential_int_data_from_list_gen(possible_input_values_list: list, fsidg_index_item: list)
+def fixed_sequential_float_data_from_list_gen(possible_input_values_list: list, fsidg_index_item: list)
+def fixed_sequential_strict_bool_data_from_list_gen(possible_input_values_list: list, fsidg_index_item: list)
+
+Funciones generadoras complejas: Compuestas por múltiples funciones generadoras simples que se ejecutan, cada una, un número determinado de veces, antes de usar la siguiente función generadora simple.
+def complex_str_data_gen(cidg_index_item: list, *functions)
+def complex_int_data_gen(cidg_index_item: list, *functions)
+def complex_float_data_gen(cidg_index_item: list, *functions)
+def complex_strict_bool_data_gen(cidg_index_item: list, *functions)
+
+
+
+
+Otras menciones:
+c) Generadores de 1 valor aleatorio, seleccionado de una forma repetible mediante parámetros diferentes a una lista. Siempre retornará un valor aleatorio, independientemente de si se repita una selección o no.
+
+def random_alphanumeric_str_of_fixed_length_data_gen(length: int, case_option: int, include_spanish_characters: bool)
+case_option: LOWERCASE, UPPERCASE, CAPITALIZE, ANYCASE
+
+def random_alphanumeric_str_of_random_length_data_gen(min_length: int, max_length: int, case_option: int, include_spanish_characters: bool)
+
+def random_alphabetic_str_of_fixed_length_data_gen(length: int, case_option: int, include_spanish_characters: bool)
+
+def random_alphabetic_str_of_random_length_data_gen(min_length: int, max_length: int, case_option: int, include_spanish_characters: bool)
+
+def random_numeric_str_of_fixed_length_data_gen(length: int)
+
+def random_numeric_str_of_random_length_data_gen(min_length: int, max_length: int)
+
+
+NO MENCIONAR:
+def random_float_from_closed_interval_with_random_precision_data_gen(min_value: float, max_value: float, min_precision: int, max_precision: int)
+def random_float_from_closed_intervals_data_gen(interval_tuples_list: list)
+def random_float_from_closed_intervals_with_fixed_precision_data_gen(interval_tuples_list: list, precision: int)
+def random_float_from_closed_intervals_with_random_precision_data_gen(interval_tuples_list: list, min_precision: int, max_precision: int)

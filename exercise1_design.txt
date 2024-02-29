@@ -1,0 +1,80 @@
+Ejercicio 1
+-----------
+descripcion.txt
+<genai-desc 1> de dos números enteros:
+Escriba un programa que lea dos números enteros y muestre en pantalla <genai-desc 2>.
+
+Código base (CB)
+----------------
+Lea a, b <-- random_int(-10, 10) para 10 CPs
+#pycass s1
+
+Variantes de ejercicio (VE)
+---------------------------
+Variante 1 (suma, s1:v1)
+------------------------
+Variante de subcódigo (VS)
+Escriba a + b
+
+etiquetas.txt
+suma
+su suma
+
+visibilidad.txt
+1
+
+dificultad.txt
+1
+
+Variante 2 (resta, s1:v2)
+-------------------------
+Variante de subcódigo (VS)
+Escriba a - b
+
+etiquetas.txt
+resta
+su resta
+
+visibilidad.txt
+1
+
+dificultad.txt
+1
+
+Variante 3 (multiplicación, s1:v3)
+----------------------------------
+Variante de subcódigo (VS)
+Escriba a * b
+
+etiquetas.txt
+multiplicación
+su multiplicación
+
+visibilidad.txt
+1
+
+dificultad.txt
+1
+
+Variante 4 (exponenciación, s1:v4)
+----------------------------------
+Variante de subcódigo (VS)
+Escriba a ** b
+
+etiquetas.txt
+potencia
+el resultado de elevar el primer número con el segundo
+
+visibilidad.txt
+1
+
+dificultad.txt
+2
+
+Dificultad del código base: 0
+Dificultad de la variante 1 del subcódigo 1: 1
+Dificultad de la variante 1 del subcódigo 2: 1
+Dificultad de la variante 1 del subcódigo 3: 1
+Dificultad de la variante 1 del subcódigo 4: 2
+
+Número de casos de prueba (CP) a asignar para cada variante de ejercicio: 10

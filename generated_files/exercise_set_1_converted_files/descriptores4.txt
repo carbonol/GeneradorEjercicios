@@ -1,0 +1,2 @@
+Potencia
+el resultado de elevar el primer número con el segundo

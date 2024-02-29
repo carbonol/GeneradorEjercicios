@@ -1,0 +1,70 @@
+Ejercicio 5
+-----------
+descripcion.txt
+<genai-desc 2> de los números enteros <genai-desc 1> introducidos por el usuario:
+Haga un programa que <genai-desc 3> los números enteros <genai-desc 1> de entre los que son ingresados por el usuario, hasta que se ingrese el número cero.
+
+Código base (CB)
+----------------
+num <-- 1, acum <-- 0
+MQ (num != 0) haga:
+	Lea num ---------------------> 5 CPs con los siguientes datos de entrada: {0; -1, -2, -7, 4, 2, -5, 0; 2, 3, 5, 0; -4, -7, -6, 0; 2, 4, 6, -3, -1, 2, 0} para todas las VS
+	Si (num != 0) entonces:
+		#pycass s1
+			#pycass s2
+		F_Si
+	F_Si
+Fin MQ
+Escriba acum
+
+Variantes de subcódigo (VS)
+---------------------------
+Variante de subcódigo s1 = v1 (s1/v1.py):
+Si (num < 0) entonces:
+
+etiquetas.txt
+negativos
+
+visibilidad.txt
+2
+
+dificultad.txt
+2
+
+Variante de subcódigo s1 = v2 (s1/v2.py):
+Si (num > 0) entonces:
+
+etiquetas.txt
+positivos
+
+visibilidad.txt
+2
+
+dificultad.txt
+2
+
+Variante de subcódigo s2 = v1 (s2/v1.py):
+acum <-- acum + 1
+
+etiquetas.txt
+Cuenta
+cuente
+
+visibilidad.txt
+2
+
+dificultad.txt
+2
+
+Variante de subcódigo s2 = v2 (s1/v2.py):
+acum <-- acum + num
+
+etiquetas.txt
+Suma
+sume
+
+visibilidad.txt
+2
+
+dificultad.txt
+2

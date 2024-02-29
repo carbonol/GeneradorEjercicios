@@ -1,0 +1,78 @@
+
+Ejercicios a probar:
+
+Ejercicio 1:
+Var1: Suma de dos números enteros. (s1=v1, D1)
+Var2: Resta de dos números enteros. (s1=v2, D1)
+Var3: Multiplicación de dos números enteros. (s1=v3, D1)
+Var4: Potencia de dos números enteros. (s1=v4, D2)
+
+Ejercicio 2:
+Var1: Área de un cuadrado. (s1=v1, D2)
+Var2: Área de un rectángulo. (s1=v2, D2)
+Var3: Área de un trapecio. (s1=v3, D3)
+
+Ejercicio 3:
+Var1: Chequeo de número impar. (s1=v1, D2)
+Var2: Chequeo de número par. (s1=v2, D2)
+Var3: Chequeo de número par o impar. (s1=v3, D3)
+
+Ejercicio 4:
+Var1: Generación de los n primeros números naturales. (s1=v1, D3)
+Var2: Generación de los n primeros números primos. (s1=v2, D7)
+Var3: Generación de los primeros n números de la serie de Fibonacci. (s1=v3, D5)
+
+Ejercicio 5:
+Var1: Conteo de los números enteros negativos. (s1=v1, s2=v1, D4)
+Var2: Suma de los números enteros negativos. (s1=v1, s2=v2, D4)
+Var3: Conteo de los números enteros positivos. (s1=v2, s2=v1, D4)
+Var4: Suma de los números enteros positivos. (s1=v2, s2=v2, D4)
+
+Ejercicio 6:
+CB: Cálculo del máximo común divisor (MCD) por el algoritmo de Euclides. (D6)
+
+Nota:
+1) En la descripción del sistema semiautomático de ejercicios de programación, se referirá principalmente al ejercicio 1. Sólo se describirán aspectos encontrados en los demás ejercicios si es estrictamente necesario.
+
+2) Se debería evaluar la posibilidad de incluir el diseño para los seis ejercicios mostrados aquí, como un anexo al documento de tesis.
+
+3) En la descripción del sistema semiautomático de ejercicios de programación se debería evaluar la creación de figuras y tablas adicionales para aclarar la descripción del sistema.
+
+
+Preparación para la prueba:
+
+I) Antes de la ejecución de python_input_instr_to_funct_converter.py:
+
+1) Crear un directorio con los archivos requeridos para el ejercicio. (Se recomienda tener una copia de respaldo para este directorio.)
+2) Especificar, en el código fuente, la ubicación del directorio que contiene los archivos y directorios resultantes del ejercicio después del uso del módulo python_input_instr_to_funct_converter.py, y la ubicación del módulo de funciones generadoras.
+
+Datos originales [NO USAR]
+CONVERTED_FILES_DIR = 'C:\\Users\\leand\\Documents\\Python3Projects\\PythonInputInstrToFunctConverter\\converted_files'
+INPUT_DATA_GENERATORS_MODULE_FILE = 'C:/Users/leand/Documents/Python3Projects/PythonInputInstrToFunctConverter/input_data_generators.py'
+
+Datos para la prueba:
+CONVERTED_FILES_DIR = 'C:\\Users\\leand\\Desktop\\Experimentos en Python\\Uso del generador automático de ejercicios\\PythonInputInstrToFunctConverter\\converted_files'
+INPUT_DATA_GENERATORS_MODULE_FILE = 'C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/input_data_generators.py'
+
+3) Ejecutar el programa python_input_instr_to_funct_converter.py.
+
+4) Ejecutar el programa assembler.py, utilizando el directorio converted_files como el dato o directorio de entrada para el sistema.
+
+
+II) Antes de la ejecución de dd_files_generator.py:
+
+5) Especificar, en el código fuente, la ubicación del módulo de obtención de listado de combinaciones.
+
+Datos originales [NO USAR]
+GEN_VARIANT_COMBINATIONS_LIST_MODULE_FILE = 'C:/Users/leand/Documents/Python3Projects/CodeAssembler/print_combinations_list.py'
+
+Datos para la prueba:
+GEN_VARIANT_COMBINATIONS_LIST_MODULE_FILE = 'C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/CodeAssembler/print_combinations_list.py'
+
+6) Ejecutar el programa dd_files_generator.py, utilizando el directorio converted_files modificado por assembler.py como el dato o directorio de entrada para el sistema.
+
+7) Ejecutar el programa test_case_builders_generator.py, utilizando el directorio converted_files modificado por dd_files_generator.py como el dato o directorio de entrada para el sistema.
+
+8) Ejecutar el programa test_case_generator.py, utilizando el directorio converted_files modificado por test_case_builders_generator.py como el dato o directorio de entrada para el sistema.
+
+9) Ejecutar el programa exercise_files_generator.py, utilizando el directorio converted_files modificado por test_case_generator.py como el dato o directorio de entrada para el sistema.

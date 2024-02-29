@@ -1,0 +1,568 @@
+
+0) Orden sugerido para la ejecución de módulos
+----------------------------------------------
+
+Este es un orden recomendado en que se deberían ejecutar los módulos de Python para crear un ejercicio de programación con variantes a ser usados en EraiEP, partiendo de una cierta estructura de directorio de ejercicio:
+1) PythonInputInstrToFunctConverter: python_input_instr_to_funct_converter.py : 
+NOTA: Este es un programa principal que usa tres módulos adicionales, así que este es un subsistema compuesto de cuatro módulos.
+Programa que convierte las instrucciones de lectura de los códigos base (CB) y las variantes de subcódigo (VS) de un ejercicio en funciones generadoras, según lo indique el usuario.
+Este programa usa el programa python_input_instr_identifier.py para encontrar instrucciones de lectura en los CB y VS, y para obtener los valores asociados a los tipos de dato permitidos en una instrucción de lectura (para fines de validación).
+Y también usa el módulo input_data_generators.py, que es la librería de funciones generadoras, para poder obtener las referencias a las funciones generadoras existentes que se usan para reemplazar las instrucciones de lectura.
+
+1a) python_input_instr_identifier.py: Programa que se usa para encontrar las instrucciones de lectura en un código de Python.
+Este programa usa el módulo que contiene la clase PythonFileInputInstruction.
+1aa) PythonFileInputInstruction.py: Contiene la clase PythonFileInputInstruction, que tiene los atributos y métodos relevantes para almacenar y obtener información de las instrucciones de lectura que se encuentren en códigos de Python.
+
+1b) input_data_generators.py: Módulo de Python que contiene la librería de funciones generadoras (y clases) que se pueden usar para convertir instrucciones de lectura en funciones.
+
+----
+
+2) CodeAssembler: assembler.py: Programa ensamblador de códigos base y variantes de subcódigo.
+NOTA: Este es un programa principal que usa un módulo adicional, así que este es un subsistema compuesto de dos módulos.
+Este programa usa el siguiente módulo:
+print_combinations_list.py: Programa que retorna una lista de combinaciones posibles de elementos, dada una lista con el número de elementos a elegir en cada posición o índice de la lista (de los cuales sólo se puede seleccionar uno).
+
+----
+
+3) Programa 1 >> Nota: Este programa también se puede ejecutar, quizás, antes de python_input_instr_to_funct_converter.py o assembler.py. >> DDFilesGenerator: dd_files_generator.py: Programa en el que el usuario define los niveles de dificultad de los CB y VE, y los descriptores de las VE, y genere archivos asociados a ello.
+
+----
+
+4) Programa 2 >> test_case_builders_generator.py, que hace obsoleto a test_case_builders_generator_v0.py, y añade código adicional al CB o VE para producir después archivos de entrada (AE) de casos de prueba (CP), junto con los archivos de salida (AS) de CP, cuando se ejecuta este CB o VE.
+
+----
+
+5) Programa 3 >> test_case_generator.py, que hace obsoleto a test_case_generator_v0.py, y permite generar N casos de prueba (CP) para el ejercicio, con base en el código modificado de CB o VE para generar archivos de CP cuando se ejecute este código N veces, 1 AE y 1 AS de CP por ejecución.
+
+----
+
+6) Programa 4 >> exercise_files_generator.py, que hace obsoleto a exercise_files_generator_v0.py, y permite generar archivos que hagan falta para poder migrar el directorio de ejercicios a EraiEP.
+
+
+
+
+1) Aspectos a considerar al usar el sistema
+----------------------------------------
+1) Sobre el módulo python_input_instr_to_funct_converter.py
+-----------------------------------------------------------
+1) El usuario debería especificar la ubicación del directorio en el cual se deberían albergar las modificaciones al directorio inicial de ejercicio (CONVERTED_FILES_DIR), o en su defecto, el sistema debería crear una copia del directorio inicial de ejercicio en la misma ubicación en donde está el directorio de ejercicio. Sin embargo, la configuración de esta ubicación sólo se puede hacer ahora mediante la modificación del código fuente. Con respecto a lo anterior, se debe tener mucha precaución, porque el sistema puede sobreescribir directorios. Prácticamente, el programa sólo sirve ahora mismo en un computador, y aún así, presenta limitaciones serias en el despliegue de artefactos de software; por lo tanto, ahora mismo es difícil justificar la consideración de un archivo ejecutable para el módulo python_input_instr_to_funct_converter.py, a menos que se realicen las modificaciones pertinentes. [IMPORTANTE Y GRAVE]
+
+# Directorio de archivos cuyas instrucciones de lectura son reemplazadas
+CONVERTED_FILES_DIR = 'C:\\Users\\leand\\Documents\\Python3Projects\\PythonInputInstrToFunctConverter\\converted_files'
+
+2) El sistema debería determinar automáticamente en dónde se encuentra el archivo correspondiente al módulo de funciones generadoras de datos (INPUT_DATA_GENERATORS_MODULE_FILE). Usualmente, este módulo debería estar ubicado en el mismo directorio en el que se encuentra el módulo conversor de IL a FG. Sin embargo, esta ruta está determinada mediante una constante en el código fuente, y ahora mismo sólo se puede modificar mediante el código fuente. [IMPORTANTE Y DE IMPACTO MODERADO]
+
+# Módulo de funciones generadoras de datos
+INPUT_DATA_GENERATORS_MODULE_FILE = 'C:/Users/leand/Documents/Python3Projects/PythonInputInstrToFunctConverter/input_data_generators.py'
+
+DEPENDENCIAS:
+a) Este módulo requiere del módulo de Python llamado shutil.
+https://docs.python.org/es/3/library/shutil.html
+El módulo shutil ofrece varias operaciones de alto nivel en archivos y colecciones de archivos. En particular, provee funciones que dan soporte a la copia y remoción de archivos. Para operaciones en archivos individuales, véase también el módulo os.
+Este se usa para eliminar directorios y copiar archivos.
+
+b) python_input_instr_identifier.py
+Este módulo alberga los posibles tipos de datos de las instrucciones de lectura, por medio de los cuales se generan las opciones de FG disponibles al usuario, dependiendo del tipo de instrucción de lectura de datos.
+Módulo para obtener las IL de cada archivo, tanto del CB como de las VS.
+- Existen también algunas operaciones con archivos directorios que se realizan con este módulo.
+- También tiene soporte para verificar si una línea de texto termina con un carácter de nueva línea (newline) - Esto es importante en el tratamiento de archivos .py para obtener, en este caso, las instrucciones de lectura del código fuente.
+Este módulo depende, a su vez, de:
+b1) PythonFileInputInstruction.py: Clase que representa una IL: Tipo, línea, representación en cadena de caracteres, nombre de variable.
+
+c) input_data_generators.py
+Este módulo alberga las funciones generadoras de valores. Los valores generados pueden ser, en términos generales, por cada llamado de función, fijos o aleatorios, un patrón de valores fijos o aleatorios, o una combinación entre estos. Es importante mencionar que este módulo no necesita estar en el mismo directorio que el código fuente que llama a las funciones de este módulo.
+
+Temas importantes:
+
+a) IL soportados
+
+b) Tipos de FG
+
+-----------------------------------------------------------
+2) Sobre el módulo assembler.py
+-----------------------------------------------------------
+
+DEPENDENCIAS:
+a) print_combinations_list.py: Programa que retorna una lista de combinaciones posibles de elementos, dada una lista con el número de elementos a elegir en cada posición o índice de la lista (de los cuales sólo se puede seleccionar uno).
+
+-----------------------------------------------------------
+3) Sobre el módulo dd_files_generator.py
+-----------------------------------------------------------
+1) Se debe especificar en el código fuente la ubicación del módulo que obtiene la lista de combinaciones posibles de un conjunto de elementos. Sin embargo, esto no es posible si el usuario sólo tiene un archivo ejecutable. Una solución práctica a este problema es duplicar el módulo del listado de combinaciones posibles en el código fuente del generador de archivos de niveles de dificultad y de descriptores, aunque esto es perjudicial para el mantenimiento del software, si el módulo del listado de combinaciones posibles debe actualizarse, puesto que en ese caso habría que hacer dos veces dicha actualización: una para cada componente de software en donde se encuentra. Quizá, darle al usuario la oportunidad de configurar la ubicación del módulo mediante interacción por CLI podría ser una opción. Otra posible opción sería considerar un directorio específico para el proyecto de software en la unidad C, que es común a los computadores que utilizan Windows. Otra carpeta común es Documents (Mis Documentos), pero se debería crear un directorio específico para el proyecto [IMPORTANTE Y GRAVE].
+
+2) Quizás se debería mejorar el programa para albergar descriptores multilínea...
+
+# Módulo de funciones generadoras de datos
+GEN_VARIANT_COMBINATIONS_LIST_MODULE_FILE = 'C:/Users/leand/Documents/Python3Projects/CodeAssembler/print_combinations_list.py'
+
+DEPENDENCIAS:
+a) print_combinations_list.py: Programa que retorna una lista de combinaciones posibles de elementos, dada una lista con el número de elementos a elegir en cada posición o índice de la lista (de los cuales sólo se puede seleccionar uno).
+<Sí, es la misma dependencia del módulo assembler.py>
+
+
+
+2) Diseño del ejercicio de programación con sus variantes
+---------------------------------------------------------
+Consideremos el ejercicio de programación de leer dos números enteros e imprimir su suma en pantalla.
+
+
+3) Estructura de directorio requerida para usar el sistema
+----------------------------------------------------------
+Esto se puede hallar con los archivos generados a partir de la prueba realizada con el sistema.
+
+
+4) Resultados del experimento (*)
+---------------------------------
+4.0) Resultados de ejecución del sistema
+4.0.1) Resultados de ejecución del módulo python_input_instr_to_funct_converter.py
+
+MENSAJE DEL SISTEMA:
+En la ventana que aparecerá en pantalla, seleccione el directorio que contiene el archivo Python del código principal (main.py) y los subdirectorios (s1, s2, etc.) que contienen, cada uno, archivos Python por variante (v1.py, v2.py, etc.) que conforman una propuesta de solución a un ejercicio de programación en Python con variantes.
+
+El directorio seleccionado es: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/tests/test_exercises/ejercicio1
+
+El siguiente archivo en revisión para cambiar sus instrucciones de lectura por funciones generadoras de datos es: \main.py
+----------------
+Archivo \main.py
+1 : num1 = int(input())
+----------------
+Esta es la instrucción de lectura que está en la línea 1 del archivo \main.py, mediante la cual se obtiene un valor de tipo int, y es asignada a la variable num1. ¿Con qué función generadora quiere reemplazar esta instrucción de lectura?
+----------------------------------------------------------------------------------------------------------------
+1) Con una que genera un valor fijo de tipo int para cualquier ejecución de la instrucción de lectura.
+2) Con una que genera un valor aleatorio de tipo int, elegido de una lista, para cualquier ejecución de la instrucción de lectura.  
+3) Con una que genera un valor aleatorio de tipo int, elegido de un intervalo cerrado, para cualquier ejecución de la instrucción de lectura.
+4) Con una que genera un valor aleatorio de tipo int, elegido de un rango con paso, para cualquier ejecución de la instrucción de lectura.
+5) Con una que genera un valor fijo de tipo int a partir de una secuencia de valores dada en una lista que se sigue considerando en 
+múltiples ejecuciones de la instrucción de lectura en un mismo programa.
+E) Salir de este programa
+R) Volver a ver la información de la instrucción a procesar
+Escriba el número o letra mayúscula de la opción y presione ENTER
+>>
+
+[Elegir la opción 3]
+
+>> 3
+Generar un valor aleatorio a partir de un intervalo cerrado de valores de tipo int:
+Por favor escriba el intervalo cerrado de posibles números enteros que reemplazará a la instrucción de lectura.
+Para ello debe usar la siguiente sintaxis:
+<valorMenor> <valorMayor>
+Tenga en cuenta que estos valores pueden estar separados por uno o más espacios en blanco, y los espacios en blanco al principio y al final de estos valores serán eliminados.
+>>
+
+[Indicar un valor menor de -10 y uno mayor de 10]
+
+>> -10 10
+idg.random_int_from_closed_interval_data_gen(-10, 10)
+----------------
+Archivo \main.py
+2 : num2 = int(input())
+----------------
+Esta es la instrucción de lectura que está en la línea 2 del archivo \main.py, mediante la cual se obtiene un valor de tipo int, y es asignada a la variable num2. ¿Con qué función generadora quiere reemplazar esta instrucción de lectura?
+----------------------------------------------------------------------------------------------------------------
+1) Con una que genera un valor fijo de tipo int para cualquier ejecución de la instrucción de lectura.
+2) Con una que genera un valor aleatorio de tipo int, elegido de una lista, para cualquier ejecución de la instrucción de lectura.  
+3) Con una que genera un valor aleatorio de tipo int, elegido de un intervalo cerrado, para cualquier ejecución de la instrucción de lectura.
+4) Con una que genera un valor aleatorio de tipo int, elegido de un rango con paso, para cualquier ejecución de la instrucción de lectura.
+5) Con una que genera un valor fijo de tipo int a partir de una secuencia de valores dada en una lista que se sigue considerando en 
+múltiples ejecuciones de la instrucción de lectura en un mismo programa.
+E) Salir de este programa
+R) Volver a ver la información de la instrucción a procesar
+Escriba el número o letra mayúscula de la opción y presione ENTER
+>>
+
+[Repetir lo mismo que se hizo para la primera instrucción de lectura]
+
+>> 3
+Generar un valor aleatorio a partir de un intervalo cerrado de valores de tipo int:
+Por favor escriba el intervalo cerrado de posibles números enteros que reemplazará a la instrucción de lectura.
+Para ello debe usar la siguiente sintaxis:
+<valorMenor> <valorMayor>
+Tenga en cuenta que estos valores pueden estar separados por uno o más espacios en blanco, y los espacios en blanco al principio y al final de estos valores serán eliminados.
+>> -10 10
+idg.random_int_from_closed_interval_data_gen(-10, 10)
+
+-- RESUMEN DE FUNCIONES GENERADORAS EN EL ARCHIVO --
+Para reemplazar las instrucciones de lectura del archivo \main.py, se han elegido las siguientes funciones generadoras:
+----------------
+Archivo \main.py
+1 : num1 = int(input()) >> num1 = idg.random_int_from_closed_interval_data_gen(-10, 10)
+2 : num2 = int(input()) >> num2 = idg.random_int_from_closed_interval_data_gen(-10, 10)
+----------------
+Con base en lo anterior, ¿acepta o rechaza la configuración anterior de funciones generadoras para reemplazar las instrucciones de lectura del archivo?
+(Después de este paso, NO se podrán realizar cambios a esta configuración durante la ejecución de este programa.)
+A) ACEPTAR
+R) RECHAZAR
+E) Salir de este programa
+V) Volver a ver la información de la configuración de funciones generadoras para el archivo
+Escriba el número o letra mayúscula de la opción y presione ENTER
+>>
+
+[ACEPTAR]
+
+>> A
+La configuración de funciones generadoras ha sido CONFIRMADA... Continuando el proceso...
+Se ha generado el archivo: C:\Users\leand\Desktop\Experimentos en Python\Uso del generador automático de ejercicios\PythonInputInstrToFunctConverter\converted_files\main.py
+Se ha generado el archivo: C:\Users\leand\Desktop\Experimentos en Python\Uso del generador automático de ejercicios\PythonInputInstrToFunctConverter\converted_files\s1\v4.py
+Se ha generado el archivo: C:\Users\leand\Desktop\Experimentos en Python\Uso del generador automático de ejercicios\PythonInputInstrToFunctConverter\converted_files\s1\v3.py
+Se ha generado el archivo: C:\Users\leand\Desktop\Experimentos en Python\Uso del generador automático de ejercicios\PythonInputInstrToFunctConverter\converted_files\s1\v2.py
+Se ha generado el archivo: C:\Users\leand\Desktop\Experimentos en Python\Uso del generador automático de ejercicios\PythonInputInstrToFunctConverter\converted_files\s1\v1.py
+PS C:\Users\leand\Desktop\Experimentos en Python\Uso del generador automático de ejercicios> 
+
+CONCLUSIONES:
+1) El archivo python_input_instr_to_funct_converter.py corresponde al programa o módulo que convierte las instrucciones de lectura de los códigos base (CB) y las variantes de subcódigo (VS) de un ejercicio en funciones generadoras (FG), según lo indique el usuario.
+2) Este programa (python_input_instr_to_funct_converter.py) usa el programa python_input_instr_identifier.py para encontrar instrucciones de lectura en los CB y VS, y para obtener los valores asociados a los tipos de dato permitidos en una instrucción de lectura (para fines de validación).
+
+----
+
+4.0.2) Resultados de ejecución del módulo assembler.py
+
+MENSAJE DEL SISTEMA:
+En la ventana que aparecerá en pantalla, seleccione el directorio en donde se albergarán los archivos y directorios del ejercicio con sus variantes.
+
+El directorio principal seleccionado para el ejercicio es: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files
+[1]
+[2]
+[3]
+[4]
+
+Hmmm... El ensamblaje no se hizo correctamente...
+
+----
+
+4.0.3) Resultados de ejecución del módulo dd_files_generator.py
+
+MENSAJE DEL SISTEMA:
+En la ventana que aparecerá en pantalla, seleccione el directorio del directorio del ejercicio de programación con sus variantes.
+
+El directorio seleccionado es: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files
+---------------------------------------------------------------
+Establecimiento del nivel de dificultad del código base main.py:
+---------------------------------------------------------------
+Por favor ingrese el nivel de dificultad estimado para el código base (CB) del ejercicio (NOTA: El nivel de dificultad debe ser mayor o igual que 0; tenga en cuenta que si el ejercicio no tiene variantes de subcódigo (VS), el nivel de dificultad del ejercicio será igual al nivel de dificultad del CB): 0
+---------------------------------------------------------------
+Establecimiento del nivel de dificultad de la variante de subcódigo s1\v1.py:
+---------------------------------------------------------------
+Por favor ingrese el nivel de dificultad estimado para esta variante de subcódigo (VS) del ejercicio (NOTA: El nivel de dificultad debe ser mayor o igual que 0; como este ejercicio tiene 1 o más VS, entonces se producirán 1 o más variantes de ejercicio (VE). El nivel de dificultad de las variantes de ejercicio está dada por la suma de los niveles de dificultad del CB y de las VS, mientras que 
+el nivel de dificultad del ejercicio será igual al promedio de los niveles de dificultad de las VS): 1
+---------------------------------------------------------------
+Establecimiento del nivel de dificultad de la variante de subcódigo s1\v2.py:
+---------------------------------------------------------------
+Por favor ingrese el nivel de dificultad estimado para esta variante de subcódigo (VS) del ejercicio (NOTA: El nivel de dificultad debe ser mayor o igual que 0; como este ejercicio tiene 1 o más VS, entonces se producirán 1 o más variantes de ejercicio (VE). El nivel de dificultad de las variantes de ejercicio está dada por la suma de los niveles de dificultad del CB y de las VS, mientras que 
+el nivel de dificultad del ejercicio será igual al promedio de los niveles de dificultad de las VS): 1
+---------------------------------------------------------------
+Establecimiento del nivel de dificultad de la variante de subcódigo s1\v3.py:
+---------------------------------------------------------------
+Por favor ingrese el nivel de dificultad estimado para esta variante de subcódigo (VS) del ejercicio (NOTA: El nivel de dificultad debe ser mayor o igual que 0; como este ejercicio tiene 1 o más VS, entonces se producirán 1 o más variantes de ejercicio (VE). El nivel de dificultad de las variantes de ejercicio está dada por la suma de los niveles de dificultad del CB y de las VS, mientras que 
+el nivel de dificultad del ejercicio será igual al promedio de los niveles de dificultad de las VS): 1
+---------------------------------------------------------------
+Establecimiento del nivel de dificultad de la variante de subcódigo s1\v4.py:
+---------------------------------------------------------------
+Por favor ingrese el nivel de dificultad estimado para esta variante de subcódigo (VS) del ejercicio (NOTA: El nivel de dificultad debe ser mayor o igual que 0; como este ejercicio tiene 1 o más VS, entonces se producirán 1 o más variantes de ejercicio (VE). El nivel de dificultad de las variantes de ejercicio está dada por la suma de los niveles de dificultad del CB y de las VS, mientras que 
+el nivel de dificultad del ejercicio será igual al promedio de los niveles de dificultad de las VS): 2
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v1.py - FASE 1:
+---------------------------------------------------------------
+Por favor ingrese el número de descriptores a ingresar para esta variante de subcódigo (VS) del ejercicio, los cuales podrán ser tenidos en cuenta para definir la descripción de variantes generadas con esta VS (NOTA: El número de descriptores debe ser mayor o igual que 1): 2
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v1.py - FASE 2:
+---------------------------------------------------------------
+---- s1\v1.py: Descriptor # 1 ----
+---------------------------------------------------------------
+Por favor ingrese el descriptor (texto) número 1 a ingresar para esta variante de subcódigo (VS) del ejercicio, el cual podrá ser considerado en la definición de la descripción de variantes generadas con esta VS
+(NOTA: Si no escribe nada, y presiona ENTER, se sobreentiende que uno de los descriptores es una cadena vacía):
+suma
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v1.py - FASE 2:
+---------------------------------------------------------------
+---- s1\v1.py: Descriptor # 2 ----
+---------------------------------------------------------------
+Por favor ingrese el descriptor (texto) número 2 a ingresar para esta variante de subcódigo (VS) del ejercicio, el cual podrá ser considerado en la definición de la descripción de variantes generadas con esta VS
+(NOTA: Si no escribe nada, y presiona ENTER, se sobreentiende que uno de los descriptores es una cadena vacía):
+su suma
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v2.py - FASE 1:
+---------------------------------------------------------------
+Por favor ingrese el número de descriptores a ingresar para esta variante de subcódigo (VS) del ejercicio, los cuales podrán ser tenidos en cuenta para definir la descripción de variantes generadas con esta VS (NOTA: El número de descriptores debe ser mayor o igual que 1): 2
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v2.py - FASE 2:
+---------------------------------------------------------------
+---- s1\v2.py: Descriptor # 1 ----
+---------------------------------------------------------------
+Por favor ingrese el descriptor (texto) número 1 a ingresar para esta variante de subcódigo (VS) del ejercicio, el cual podrá ser considerado en la definición de la descripción de variantes generadas con esta VS
+(NOTA: Si no escribe nada, y presiona ENTER, se sobreentiende que uno de los descriptores es una cadena vacía):
+resta
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v2.py - FASE 2:
+---------------------------------------------------------------
+---- s1\v2.py: Descriptor # 2 ----
+---------------------------------------------------------------
+Por favor ingrese el descriptor (texto) número 2 a ingresar para esta variante de subcódigo (VS) del ejercicio, el cual podrá ser considerado en la definición de la descripción de variantes generadas con esta VS
+(NOTA: Si no escribe nada, y presiona ENTER, se sobreentiende que uno de los descriptores es una cadena vacía):
+su resta
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v3.py - FASE 1:
+---------------------------------------------------------------
+Por favor ingrese el número de descriptores a ingresar para esta variante de subcódigo (VS) del ejercicio, los cuales podrán ser tenidos en cuenta para definir la descripción de variantes generadas con esta VS (NOTA: El número de descriptores debe ser mayor o igual que 1): 2
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v3.py - FASE 2:
+---------------------------------------------------------------
+---- s1\v3.py: Descriptor # 1 ----
+---------------------------------------------------------------
+Por favor ingrese el descriptor (texto) número 1 a ingresar para esta variante de subcódigo (VS) del ejercicio, el cual podrá ser considerado en la definición de la descripción de variantes generadas con esta VS
+(NOTA: Si no escribe nada, y presiona ENTER, se sobreentiende que uno de los descriptores es una cadena vacía):
+multiplicación
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v3.py - FASE 2:
+---------------------------------------------------------------
+---- s1\v3.py: Descriptor # 2 ----
+---------------------------------------------------------------
+Por favor ingrese el descriptor (texto) número 2 a ingresar para esta variante de subcódigo (VS) del ejercicio, el cual podrá ser considerado en la definición de la descripción de variantes generadas con esta VS
+(NOTA: Si no escribe nada, y presiona ENTER, se sobreentiende que uno de los descriptores es una cadena vacía):
+su multiplicación
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v4.py - FASE 1:
+---------------------------------------------------------------
+Por favor ingrese el número de descriptores a ingresar para esta variante de subcódigo (VS) del ejercicio, los cuales podrán ser tenidos en cuenta para definir la descripción de variantes generadas con esta VS (NOTA: El número de descriptores debe ser mayor o igual que 1): 2
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v4.py - FASE 2:
+---------------------------------------------------------------
+---- s1\v4.py: Descriptor # 1 ----
+---------------------------------------------------------------
+Por favor ingrese el descriptor (texto) número 1 a ingresar para esta variante de subcódigo (VS) del ejercicio, el cual podrá ser considerado en la definición de la descripción de variantes generadas con esta VS
+(NOTA: Si no escribe nada, y presiona ENTER, se sobreentiende que uno de los descriptores es una cadena vacía):
+potencia
+---------------------------------------------------------------
+Definición de los descriptores de la variante de subcódigo s1\v4.py - FASE 2:
+---------------------------------------------------------------
+---- s1\v4.py: Descriptor # 2 ----
+---------------------------------------------------------------
+Por favor ingrese el descriptor (texto) número 2 a ingresar para esta variante de subcódigo (VS) del ejercicio, el cual podrá ser considerado en la definición de la descripción de variantes generadas con esta VS
+(NOTA: Si no escribe nada, y presiona ENTER, se sobreentiende que uno de los descriptores es una cadena vacía):
+el resultado de elevar el primer número con el segundo
+
+Archivo de dificultad del ejercicio generado: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\dificultad.txt
+Archivo de dificultad de variante de ejercicio (VE) generado: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\dificultad1.txt
+Archivo de descriptores de variante de ejercicio (VE) generado: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\descriptores1.txt
+Archivo de dificultad de variante de ejercicio (VE) generado: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\dificultad2.txt
+Archivo de descriptores de variante de ejercicio (VE) generado: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\descriptores2.txt
+Archivo de dificultad de variante de ejercicio (VE) generado: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\dificultad3.txt
+Archivo de descriptores de variante de ejercicio (VE) generado: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\descriptores3.txt
+Archivo de dificultad de variante de ejercicio (VE) generado: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\dificultad4.txt
+Archivo de descriptores de variante de ejercicio (VE) generado: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\descriptores4.txt
+PS C:\Users\leand\Desktop\Experimentos en Python\Uso del generador automático de ejercicios>
+
+4.0.4) Resultados de ejecución del módulo test_case_builders_generator.py
+
+MENSAJE DEL SISTEMA:
+En la ventana que aparecerá en pantalla, seleccione el directorio que contiene los archivos ensamblados (.py) por cada combinación de variantes (Estos deben llamarse: res1.py, res2.py, ..., resN.py, donde N es el número de combinaciones de variantes del ejercicio 
+de programación)
+
+El directorio seleccionado es: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files
+
+4.0.5) Resultados de ejecución del módulo test_case_generator.py
+
+MENSAJE DEL SISTEMA:
+En la ventana que aparecerá en pantalla, seleccione el directorio que contiene los archivos .py generadores de entradas y salidas para casos de prueba, una por cada combinación de variantes (Estos deben llamarse: res1_tcg.py, res2_tcg.py, ..., resN_tcg.py, donde N es el número de combinaciones de variantes del ejercicio de programación)
+
+El directorio seleccionado es: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files
+¿Cuántos casos de prueba quiere crear con cada uno de los archivos generadores de caso de prueba creados a partir de todas las variantes de ejercicio (VE) producidas con todas las combinaciones de variantes?
+>> 10
+¿A partir de qué número quiere comenzar a generar los archivos de casos de prueba?
+Usualmente, este valor debería ser 1. El número ingresado debe ser un número mayor que 0.
+Si no ingresa ningún valor y presiona ENTER, o si no ingresa un número, se sobreentenderá que el primer número de caso de prueba a crear es el 1.
+>>
+¿Desea agregar automáticamente el primer caso de prueba generado con los archivos generadores de casos de prueba de variantes de este ejercicio (VE) como un caso de prueba visible en los archivos de casos de prueba visibles para las variantes de este ejercicio (VE)
+(Si el archivo no existe, se creará, y si ya existe, se agregará 1 línea más a este archivo, o se sobrescribirá, dependiendo de lo que responda después)
+Escriba S y presione ENTER para responder sí a esta pregunta.
+Escriba N y presione ENTER para responder no a esta pregunta.
+>> S
+Ha decidido añadir los primeros casos de prueba generados como casos visibles.
+¿Cuántos casos de prueba visibles quiere crear con cada uno de los archivos generadores de caso de prueba creados a partir de todas 
+las variantes de ejercicio (VE) producidas con todas las combinaciones de variantes?
+Puesto que ya ha seleccionado que quiere generar 1 caso de prueba visible, entonces el número mínimo de casos de prueba visibles a generar es 1.
+Además, tenga en cuenta que los números de casos de prueba visibles a incluir en los archivos de casos de prueba visibles son aleatorios, excepto por el primer caso de prueba generado a partir de cada archivo generador de casos de prueba de cada variante de ejercicio (VE):
+Finalmente, como ya existen 10 nuevos casos de prueba a crear, la cantidad de casos de prueba visibles no puede exceder esta cantidad.
+>> 1
+¿Desea sobrescribir los archivos de casos de prueba visibles para las variantes de este ejercicio (VE)?
+Escriba S y presione ENTER para responder sí a esta pregunta.
+Escriba N y presione ENTER para responder no a esta pregunta.
+>> S
+Ha decidido sobrescribir los archivos de casos de prueba visibles.
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada1.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida1.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada2.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida2.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada3.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida3.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada4.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida4.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada5.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida5.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada6.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida6.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada7.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida7.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada8.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida8.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada9.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida9.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\entrada10.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador 
+automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\salida10.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1
+Se ha creado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\visibilidad.txt
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada1.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida1.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada2.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida2.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada3.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida3.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada4.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida4.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada5.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida5.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada6.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida6.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada7.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida7.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada8.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida8.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada9.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida9.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\entrada10.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador 
+automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\salida10.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2
+Se ha creado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\visibilidad.txt
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada1.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida1.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada2.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida2.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada3.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida3.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada4.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida4.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada5.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida5.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada6.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida6.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada7.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida7.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada8.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida8.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada9.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida9.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\entrada10.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador 
+automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\salida10.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3
+Se ha creado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\visibilidad.txt
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada1.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida1.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada2.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida2.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada3.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida3.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada4.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida4.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada5.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida5.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada6.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida6.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada7.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida7.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada8.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida8.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada9.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida9.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\entrada10.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador 
+automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha generado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\salida10.txt en el directorio C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4
+Se ha creado el archivo C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\visibilidad.txt
+PS C:\Users\leand\Desktop\Experimentos en Python\Uso del generador automático de ejercicios>
+
+
+4.0.6) Resultados de ejecución del módulo exercise_files_generator.py
+
+MENSAJE DEL SISTEMA:
+En la ventana que aparecerá en pantalla, seleccione el directorio del directorio del ejercicio de programación con sus variantes.
+
+El directorio seleccionado es: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files
+Se ha generado el archivo: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\dificultad.txt
+Se ha generado el archivo: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var1\descriptores.txt
+Se ha generado el archivo: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\dificultad.txt
+Se ha generado el archivo: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var2\descriptores.txt
+Se ha generado el archivo: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\dificultad.txt
+Se ha generado el archivo: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var3\descriptores.txt
+Se ha generado el archivo: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\dificultad.txt
+Se ha generado el archivo: C:/Users/leand/Desktop/Experimentos en Python/Uso del generador automático de ejercicios/PythonInputInstrToFunctConverter/converted_files\var4\descriptores.txt
+PS C:\Users\leand\Desktop\Experimentos en Python\Uso del generador automático de ejercicios>
+
+
+
+---------------------------------------------------
+4.1) ¿Qué datos necesita el sistema para ser usado?
+---------------------------------------------------
+
+Directorio inicial requerido para usar el módulo python_input_instr_to_funct_converter.py:
+- Archivo Python del código principal o código base (CB) (main.py)
+- Subdirectorios (s1, s2, etc.) en donde cada uno tiene archivos Python asociados a variantes de subcódigo (VS) para el código base (CB) (v1.py, v2.py, etc.) - Cada subdirectorio corresponde a un conjunto de variantes de subcódigo
+Tanto main.py como los archivos v1.py, v2.py, etc. conforman una propuesta de solución a un ejercicio de programación en Python con variantes.
+
+NOTA:
+En los archivos de CB y de VS, se debe cuidar que la etiqueta #pycass sN esté escrita correctamente, donde N es el número del subcódigo, empezando desde 1.
+Ejemplo de uso incorrecto:
+# pycass s1
+Ejemplo de uso correcto:
+#pycass s1
+Además, se debe cuidar la sangría (indentation) en donde se ubica la etiqueta, porque todo el código que se ensambla aquí es ubicado a partir de esta sangría.
+
+Note que para el primer, segundo, tercer, cuarto, quinto y sexto módulo NO se necesita el archivo de texto de descripción en el directorio de ejercicios, sino sólo los códigos fuente relevantes. Esto significa que el archivo de texto de descripción del ejercicio sólo es relevante en el SEPPI. Sin embargo, en el diseño propuesto es útil definir de antemano cuáles son los descriptores que se usarán, puesto que el sistema semiautomático de generación de ejercicios es capaz de generar los archivos relacionados con esos descriptores, y por ende, puede servir como ayuda para ello.
+
+Para el segundo módulo, se necesita el directorio con los archivos modificados por el primer módulo.
+
+Para el tercer módulo, se necesita el directorio con los archivos generados por el segundo módulo. En este momento ya se deben haber establecido las variantes de ejercicio (VE) en el directorio principal de los ejercicios a través de los archivos resN.py.
+
+IMPORTANTE: Antes de usar el tercer módulo, se debería saber cuántos descriptores están asociados a cada subcódigo.
+También, aunque no se necesite incluir el archivo de texto de descripción (descripcion.txt) en el directorio principal de los ejercicios para que el módulo 3 funcione, el docente debería saber de antemano cuál es la descripción general, y cuáles son las partes del texto de la descripción del ejercicio que deberían cambiar dependiendo de las variantes de los subcódigos del ejercicio, y de manera más general, de las variantes de ejercicio.
+
+Para el cuarto módulo, se necesita el directorio con los archivos generados por el tercer módulo.
+
+Para el quinto módulo, se necesita el directorio con los archivos generados por el cuarto módulo.
+
+IMPORTANTE: Antes de usar el quinto módulo, se debería saber cuántos casos de prueba, en total, se quieren generar para cada variante de ejercicio.
+
+Para el sexto módulo, se necesita el directorio con los directorios generados por el quinto módulo. En este sexto módulo, se hará uso de los archivos de dificultadN.txt y descriptoresN.txt creados en el tercer módulo, así como los directorios específicos a variantes de ejercicio (varN). En los casos anteriores, N es el número de la variante de ejercicio.
+
+ADVERTENCIA [REQUIERE CONFIRMACIÓN]: Es posible que para el uso de los archivos del ejercicio en SEPPI sea encesario cambiar el nombre del directorio principal, para que este se llame ejercicioM, siendo M el nombre del grupo de ejercicios. 
+
+
+
+
+-------------------------------------------------------------------------------------
+4.2) ¿Qué hace el sistema en conjunto, en concreto? ¿Qué papel desempeña cada módulo?
+-------------------------------------------------------------------------------------
+Salvo por algunos detalles que están escritos en la sección 4.4 de estas notas, esta pregunta ya se ha respondido..
+
+
+--------------------------------------------------------------
+4.3) ¿Qué resultados produce el sistema, una vez es utilizado?
+--------------------------------------------------------------
+*De aquí se puede estructurar las subsecciones que hacen parte de la sección 5.3.
+Esto se ha documentado en un documento de Word, y a un nivel más bajo, en estas notas.
+
+------------------------------------------------------
+4.4) ¿Qué hace falta para terminar con la sección 5.3?
+------------------------------------------------------
+
+- Hacer explícito en el documento el hecho de que el usuario puede elegir las funciones generadoras.
+- Explicar brevemente las funciones generadoras que se pueden realizar (Tabla)
+- Diagrama de cómo se convierten las instrucciones de lectura en funciones generadoras (Tener en cuenta casos donde hay sangría o múltiples subcódigos)
+- Diagrama de cómo se generan los casos de prueba
+- Explicación referente al último módulo, el módulo 6, y la estructura de archivos que al final es obtenida para ser trasladada al otro sistema, el de ejercicio y práctica adaptativa.
+- Nota pequeña sobre un caso particular en el que se pueden hacer cambios manuales al código fuente de la variante de ejercicio para generar casos de prueba.
+
+- Ubicar algunas consideraciones de detalles de funcionamiento encontradas en el documento. - Ya están escritas. - Si lo amerita.
+- Diagrama de cómo se generan las descripciones de los ejercicios - Quizás no.
+
+------------------------------------------------------------------------
+4.5) ¿Cómo usar el sistema semiautomático de ejercicios de programación?
+------------------------------------------------------------------------
+La secuencia concisa de uso del sistema está en el archivo tests.txt.
