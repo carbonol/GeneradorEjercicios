@@ -50,9 +50,9 @@ Los archivos **tests.txt** y **tests_results.txt**, especialmente en las seccion
 
 ### Ejemplos de diseño de ejercicios
 
-Para probar ejercicios, se pueden utilizar los documentos PDF, y los archivos **exercise1_design.txt** y **exercise5_design.txt** para tener una mejor idea de cómo diseñar ejercicios antes de usar el sistema.
+Para probar ejercicios en el sistema, y tener una mejor idea de cómo diseñarlos, se pueden revisar los documentos PDF, y los archivos **exercise1_design.txt** y **exercise5_design.txt** ubicados en este repositorio.
 
-Además, los directorios **test_files** contiene las estructuras de archivos iniciales necesarias para generar ejercicios resultantes a partir de variantes en el sistema. Los directorios exercise1 y exercise5 continen información completa, pero aún falta añadir la información relevante para los demás. El directorio **generated_files** contiene ejemplos de estructuras de directorio generadas con los ejercicios resultantes para los casos de exercise1 y exercise5 (cuando estos fueron utilizados como problemas raíz o base).
+Además, los directorios en **test_files** contienen las estructuras de archivos iniciales necesarias para generar ejercicios resultantes a partir de variantes en el sistema. En particular, los directorios exercise1 y exercise5 continen información completa, pero aún falta añadir la información relevante para los demás casos. El directorio **generated_files** contiene ejemplos de estructuras de directorio generadas en el sistema con los ejercicios resultantes para los casos de exercise1 y exercise5 (cuando estos fueron utilizados como problemas raíz o base).
 
 ## Licencia
 
